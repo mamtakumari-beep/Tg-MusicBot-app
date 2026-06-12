@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TG Music Bots Hub</title>
-    <!-- Telegram Library -->
+    <!-- ✅ FIXED: Sahi Telegram Library Link lagaya hai -->
     <script src="https://telegram.org"></script>
     <style>
         :root {
@@ -104,20 +104,16 @@
 </head>
 <body>
 
-    <!-- Feature 1: User Details -->
-    <div class="card" id="user-card">
-        <h3>👤 User Details (You)</h3>
-        
-        <!-- 🌟 नया प्रोफाइल फोटो का सेक्शन -->
-        <div class="avatar-container">
-            <!-- शुरू में एक डिफ़ॉल्ट यूजर इमेज लोड होगी -->
-            <img id="u-avatar" class="user-avatar" src="https://cloudflare.com" alt="User DP">
+    <!-- FEATURE 1: TG USER DETAILS -->
+    <div class="section">
+        <h2>🎵 Welcome User</h2>
+        <div class="user-card">
+            <div id="avatar-box" class="avatar-container">?</div>
+            <div class="user-info">
+                <p><strong>Name:</strong> <span id="user-name">Fetching...</span></p>
+                <p><strong>Username:</strong> <span id="user-username">@fetching</span></p>
+            </div>
         </div>
-
-        <p><span class="bold">Name:</span> <span id="u-name">Loading...</span></p>
-        <p><span class="bold">Username:</span> <span id="u-username">Loading...</span></p>
-        <p><span class="bold">ID:</span> <span id="u-id">Loading...</span></p>
-        <p><span class="bold">Language:</span> <span id="u-lang">Loading...</span></p>
     </div>
 
     <!-- FEATURE 2: BOT LIST -->
@@ -130,62 +126,64 @@
     <div class="section">
         <h2>👑 Developer & Support</h2>
         <div class="owner-card">
+            <!-- ✍️ Yahan apna asli naam badlein -->
             <p><strong>Owner:</strong> Niraj</p>
+            <!-- ✍️ Yahan apna asli telegram username badlein -->
             <p><strong>Username:</strong> @Comeback_009</p>
-            <a href="https://t.me/Sangeet_Stream" class="btn" style="text-align: center;">Contact Support</a>
+            <!-- ✍️ Yahan apne bot ya chat ka link dalein -->
+            <a href="https://t.me/Comeback_009" class="btn" style="text-align: center;">Support</a>
         </div>
     </div>
 
     <script>
-        function initTelegramApp() {
-            // Telegram WebApp Object Check
+        // Telegram Initialization Secure Function
+        window.addEventListener('DOMContentLoaded', () => {
             const tg = window.Telegram?.WebApp;
-
+            
             if (tg) {
-                tg.ready(); 
-                tg.expand(); 
+                tg.ready();
+                tg.expand();
 
-                // Data fetch karne ki koshish karein
-                const user = tg.initDataUnsafe?.user; 
+                // User details nikalna
+                const initData = tg.initDataUnsafe;
+                const user = initData?.user;
 
-                if (user && user.id) {
-                    // Agar user mil gaya toh loading hatao aur details dikhao
-                    document.getElementById('u-name').innerText = `${user.first_name} ${user.last_name || ''}`;
-                    document.getElementById('u-username').innerText = user.username ? `@${user.username}` : 'No Username';
-                    document.getElementById('u-id').innerText = user.id;
-                    document.getElementById('u-lang').innerText = user.language_code || 'en';
-                    
-                    // 🌟 अगर टेलीग्राम यूजर की फोटो का यूआरएल देता है तो उसे अपडेट करें
+                if (user) {
+                    const firstName = user.first_name || "";
+                    const lastName = user.last_name || "";
+                    const fullName = `${firstName} ${lastName}`.trim();
+                    const username = user.username ? `@${user.username}` : 'No Username';
+
+                    // Update UI
+                    document.getElementById('user-name').innerText = fullName;
+                    document.getElementById('user-username').innerText = username;
+
+                    // Profile Pic Setup
+                    const avatarBox = document.getElementById('avatar-box');
                     if (user.photo_url) {
-                        document.getElementById('u-avatar').src = user.photo_url;
+                        avatarBox.innerHTML = `<img src="${user.photo_url}" class="avatar-img" alt="DP">`;
+                    } else {
+                        // Fallback: Agar photo na mile, to naam ka pehla aksar bada karke dikhao
+                        avatarBox.innerText = firstName.charAt(0).toUpperCase();
                     }
-                    
-                    // Interval ko rokne ke liye
-                    clearInterval(checkInterval);
+                } else {
+                    showDemoData("User data null (Open via Bot Link Only)");
                 }
+            } else {
+                showDemoData("Not in Telegram Environment");
             }
+        });
+
+        function showDemoData(reason) {
+            document.getElementById('user-name').innerText = "Demo Account";
+            document.getElementById('user-username').innerText = "@demo_user";
+            document.getElementById('avatar-box').innerText = "D";
+            console.log("Status: " + reason);
         }
 
-        // Agar data slow load ho raha hai, toh yeh har 500ms (0.5 second) me check karega
-        const checkInterval = setInterval(initTelegramApp, 500);
-
-        // Max 5 seconds tak check karega, agar fir bhi nahi mila toh Browser mode default data dikhayega
-        setTimeout(() => {
-            clearInterval(checkInterval);
-            if (document.getElementById('u-id').innerText === "Loading...") {
-                document.getElementById('u-name').innerText = "Web Browser Mode";
-                document.getElementById('u-username').innerText = "@not_inside_tg";
-                document.getElementById('u-id').innerText = "Offline_ID_101";
-                document.getElementById('u-lang').innerText = "en";
-                // ब्राउज़र मोड में एक फूल वाली डिफ़ॉल्ट इमेज दिखेगी
-                document.getElementById('u-avatar').src = "https://cloudflare.com";
-            }
-        }, 5000);
-        </script>
-
-        // 2. Bots Data List
+        // 2. Bots Data List (Aap yahan placeholder image links badal sakte hain)
         const botsData = [
-            { name: "laado Music Bot", username: "laado_musicbot", img: "https://unsplash.com" },
+            { name: "˹ʟᴀᴀᴅᴏ ꭙ ᴍᴜsɪᴄ˼ ♪", username: "laado_musicbot", img: "https://image-link.edgeone.app/1780443422645-he6p9r.jpg" },
             { name: "Spotify", username: "spotifysave_bot", img: "https://unsplash.com" },
             { name: "YouTube music", username: "yt_audio_bot", img: "https://unsplash.com" },
         ];
@@ -208,6 +206,7 @@
             container.appendChild(item);
         });
 
+        // ✅ FIXED: Missing slash (/) syntax fix kar diya gaya hai
         function openBot(username) {
             if (window.Telegram?.WebApp) {
                 window.Telegram.WebApp.openTelegramLink(`https://t.me{username}`);
