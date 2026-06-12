@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clean Bot Store</title>
     
-    <!-- टेलीग्राम मिनी ऐप SDK -->
+    <!-- 🟢 टेलीग्राम मिनी ऐप SDK (इसे पूरी तरह ठीक कर दिया गया है) -->
     <script src="https://telegram.org"></script>
 
     <style>
@@ -27,7 +27,6 @@
         
         .status-badge { position: absolute; top: 16px; right: 16px; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 12px; background-color: rgba(41, 255, 214, 0.1); color: #29ffd6; border: 1px solid rgba(41, 255, 214, 0.3); }
         
-        /* सिर्फ एक मुख्य ओपन बटन */
         .btn { display: block; width: 100%; padding: 11px 0; border-radius: 10px; font-size: 14px; font-weight: bold; text-align: center; cursor: pointer; border: none; transition: 0.2s; }
         .btn-open { background-color: #0a3a35; color: white; border: 1px solid #145c54; }
         .btn-open:active { transform: scale(0.98); }
@@ -35,9 +34,9 @@
 </head>
 <body>
 
-    <!-- यूज़र डिटेल्स (ऑटोमैटिक) -->
+    <!-- यूज़र डिटेल्स सेक्शन -->
     <div class="header">
-        <img id="user-photo" src="https://placeholder.com" alt="User DP">
+        <img id="user-photo" src="https://dicebear.com" alt="User DP">
         <div class="header-text">
             <h2 id="user-name">Loading User...</h2>
             <p id="user-info">Username: @... | ID: Fetching...</p>
@@ -55,26 +54,42 @@
     </div>
 
     <script>
+        // टेलीग्राम इनिशियलाइज़ करना
         const tg = window.Telegram.WebApp;
         tg.expand();
+        tg.ready(); // टेलीग्राम को सिग्नल भेजना कि ऐप लोड हो चुका है
 
-        // 1. यूज़र की डिटेल्स फेच करना
+        // 🟢 1. यूज़र की लाइव डिटेल्स टेलीग्राम से खींचना
         const userData = tg.initDataUnsafe?.user;
+
         if (userData) {
-            document.getElementById('user-name').innerText = `${userData.first_name} ${userData.last_name || ''}`;
+            // यूज़र का नाम सेट करें
+            const fullName = `${userData.first_name} ${userData.last_name || ''}`.trim();
+            document.getElementById('user-name').innerText = fullName;
+            
+            // यूज़रनेम और आईडी सेट करें
             const usernameText = userData.username ? `@${userData.username}` : "No Username";
             document.getElementById('user-info').innerText = `${usernameText} | ID: ${userData.id}`;
-            if (userData.photo_url) document.getElementById('user-photo').src = userData.photo_url;
+            
+            // अगर यूज़र की कोई लाइव टेलीग्राम फोटो उपलब्ध है, तो उसे दिखाएं
+            if (userData.photo_url) {
+                document.getElementById('user-photo').src = userData.photo_url;
+            } else {
+                // अगर फोटो छुपी हुई है, तो नाम के पहले अक्षर की सुंदर फोटो जनरेट करें
+                document.getElementById('user-photo').src = `https://dicebear.com{fullName}`;
+            }
         } else {
+            // 🟡 बैकअप: केवल टेलीग्राम के बाहर (जैसे क्रोम ब्राउज़र में) टेस्टिंग के लिए
             document.getElementById('user-name').innerText = "Demo Developer 🚀";
             document.getElementById('user-info').innerText = "@demo_user | ID: 123456789";
+            document.getElementById('user-photo').src = "https://dicebear.com";
         }
 
         // 2. अलग फ़ाइल (bots.json) से बोट्स का डेटा लोड करना
         async function fetchBotsFromJSON() {
             const container = document.getElementById('bot-list-container');
             try {
-                const response = await fetch('bots.json');
+                const response = await fetch('./bots.json');
                 const botsData = await response.json();
 
                 document.getElementById('total-bots').innerText = `${botsData.length} Bots Active`;
@@ -96,7 +111,7 @@
                             </div>
                         </div>
                         <p class="bot-desc">${bot.desc}</p>
-                        <button class="btn btn-open" onclick="tg.openTelegramLink('https://t.me{bot.username}')">
+                        <button class="btn btn-open" onclick="window.Telegram.WebApp.openTelegramLink('https://t.me{bot.username}')">
                             💬 Open Private Chat
                         </button>
                     `;
