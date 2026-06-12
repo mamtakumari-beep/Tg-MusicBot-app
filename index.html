@@ -104,16 +104,20 @@
 </head>
 <body>
 
-    <!-- FEATURE 1: TG USER DETAILS -->
-    <div class="section">
-        <h2>🎵 Welcome User</h2>
-        <div class="user-card">
-            <div id="avatar-box" class="avatar-container">?</div>
-            <div class="user-info">
-                <p><strong>Name:</strong> <span id="user-name">Fetching...</span></p>
-                <p><strong>Username:</strong> <span id="user-username">@fetching</span></p>
-            </div>
+    <!-- Feature 1: User Details -->
+    <div class="card" id="user-card">
+        <h3>👤 User Details (You)</h3>
+        
+        <!-- 🌟 नया प्रोफाइल फोटो का सेक्शन -->
+        <div class="avatar-container">
+            <!-- शुरू में एक डिफ़ॉल्ट यूजर इमेज लोड होगी -->
+            <img id="u-avatar" class="user-avatar" src="https://cloudflare.com" alt="User DP">
         </div>
+
+        <p><span class="bold">Name:</span> <span id="u-name">Loading...</span></p>
+        <p><span class="bold">Username:</span> <span id="u-username">Loading...</span></p>
+        <p><span class="bold">ID:</span> <span id="u-id">Loading...</span></p>
+        <p><span class="bold">Language:</span> <span id="u-lang">Loading...</span></p>
     </div>
 
     <!-- FEATURE 2: BOT LIST -->
