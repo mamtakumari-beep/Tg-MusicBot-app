@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Bot Store</title>
+    
+    <!-- टेलीग्राम मिनी ऐप SDK -->
+    <script src="https://telegram.org"></script>
+
+    <style>
+        body { background-color: #031514; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 16px; user-select: none; }
+        .header { background-color: #062422; border: 1px solid #0d3c38; border-radius: 12px; padding: 14px; display: flex; align-items: center; margin-bottom: 20px; }
+        .header img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; border: 2px solid #00ffcc; background: #114b44; object-fit: cover; }
+        .header-text h2 { margin: 0; font-size: 15px; color: #00ffcc; font-weight: bold; }
+        .header-text p { margin: 3px 0 0 0; font-size: 11px; color: #a0a0a0; }
+        
+        .title-section h1 { font-size: 20px; margin: 0; font-weight: bold; }
+        .active-tag { display: inline-block; background-color: #0a3531; color: #29ffd6; font-size: 11px; padding: 4px 10px; border-radius: 20px; margin-top: 8px; border: 1px solid #13544e; }
+        
+        .bot-card { background-color: #05201e; border: 1px solid #0d3c38; border-radius: 16px; padding: 16px; margin-top: 16px; position: relative; }
+        .bot-info { display: flex; align-items: center; margin-bottom: 12px; }
+        .bot-info img { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; background: #114b44; border: 1px solid #0d3c38; }
+        .bot-name h3 { margin: 0; font-size: 16px; font-weight: bold; letter-spacing: 0.5px; }
+        .bot-username { color: #a0a0a0; font-size: 12px; margin: 2px 0 0 0; }
+        .bot-desc { font-size: 13px; color: #e0e0e0; line-height: 1.4; margin: 8px 0 16px 0; }
+        
+        .status-badge { position: absolute; top: 16px; right: 16px; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 12px; background-color: rgba(41, 255, 214, 0.1); color: #29ffd6; border: 1px solid rgba(41, 255, 214, 0.3); }
+        
+        /* सिर्फ एक मुख्य ओपन बटन */
+        .btn { display: block; width: 100%; padding: 11px 0; border-radius: 10px; font-size: 14px; font-weight: bold; text-align: center; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-open { background-color: #0a3a35; color: white; border: 1px solid #145c54; }
+        .btn-open:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+    <!-- यूज़र डिटेल्स (ऑटोमैटिक) -->
+    <div class="header">
+        <img id="user-photo" src="https://placeholder.com" alt="User DP">
+        <div class="header-text">
+            <h2 id="user-name">Loading User...</h2>
+            <p id="user-info">Username: @... | ID: Fetching...</p>
+        </div>
+    </div>
+
+    <div class="title-section">
+        <h1>🤖 Music Bot Collective</h1>
+        <div class="active-tag" id="total-bots">0 Bots Active</div>
+    </div>
+
+    <!-- बोट्स लिस्ट कंटेनर -->
+    <div id="bot-list-container">
+        <p style="text-align: center; color: #a0a0a0; margin-top: 20px;">बोट्स की लिस्ट लोड हो रही है...</p>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // 1. यूज़र की डिटेल्स फेच करना
+        const userData = tg.initDataUnsafe?.user;
+        if (userData) {
+            document.getElementById('user-name').innerText = `${userData.first_name} ${userData.last_name || ''}`;
+            const usernameText = userData.username ? `@${userData.username}` : "No Username";
+            document.getElementById('user-info').innerText = `${usernameText} | ID: ${userData.id}`;
+            if (userData.photo_url) document.getElementById('user-photo').src = userData.photo_url;
+        } else {
+            document.getElementById('user-name').innerText = "Demo Developer 🚀";
+            document.getElementById('user-info').innerText = "@demo_user | ID: 123456789";
+        }
+
+        // 2. अलग फ़ाइल (bots.json) से बोट्स का डेटा लोड करना
+        async function fetchBotsFromJSON() {
+            const container = document.getElementById('bot-list-container');
+            try {
+                const response = await fetch('bots.json');
+                const botsData = await response.json();
+
+                document.getElementById('total-bots').innerText = `${botsData.length} Bots Active`;
+                container.innerHTML = ""; 
+
+                botsData.forEach(bot => {
+                    const card = document.createElement('div');
+                    card.className = "bot-card";
+                    
+                    const botPhoto = `https://dicebear.com{bot.username}`;
+
+                    card.innerHTML = `
+                        <div class="status-badge">● Online</div>
+                        <div class="bot-info">
+                            <img src="${botPhoto}" alt="${bot.name}">
+                            <div class="bot-name">
+                                <h3>${bot.name}</h3>
+                                <p class="bot-username">@${bot.username}</p>
+                            </div>
+                        </div>
+                        <p class="bot-desc">${bot.desc}</p>
+                        <button class="btn btn-open" onclick="tg.openTelegramLink('https://t.me{bot.username}')">
+                            💬 Open Private Chat
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("JSON फ़ाइल लोड करने में एरर आया:", error);
+                container.innerHTML = `<p style="text-align: center; color: #ff5555;">बोट्स की लिस्ट लोड नहीं हो सकी।</p>`;
+            }
+        }
+
+        fetchBotsFromJSON();
+    </script>
+</body>
+</html>
