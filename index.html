@@ -1,130 +1,204 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Bot Store</title>
-    
-    <!-- 🟢 टेलीग्राम मिनी ऐप SDK (इसे पूरी तरह ठीक कर दिया गया है) -->
+    <title>TG Music Bots Hub</title>
     <script src="https://telegram.org"></script>
-
     <style>
-        body { background-color: #031514; color: #ffffff; font-family: Arial, sans-serif; margin: 0; padding: 16px; user-select: none; }
-        .header { background-color: #062422; border: 1px solid #0d3c38; border-radius: 12px; padding: 14px; display: flex; align-items: center; margin-bottom: 20px; }
-        .header img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; border: 2px solid #00ffcc; background: #114b44; object-fit: cover; }
-        .header-text h2 { margin: 0; font-size: 15px; color: #00ffcc; font-weight: bold; }
-        .header-text p { margin: 3px 0 0 0; font-size: 11px; color: #a0a0a0; }
-        
-        .title-section h1 { font-size: 20px; margin: 0; font-weight: bold; }
-        .active-tag { display: inline-block; background-color: #0a3531; color: #29ffd6; font-size: 11px; padding: 4px 10px; border-radius: 20px; margin-top: 8px; border: 1px solid #13544e; }
-        
-        .bot-card { background-color: #05201e; border: 1px solid #0d3c38; border-radius: 16px; padding: 16px; margin-top: 16px; position: relative; }
-        .bot-info { display: flex; align-items: center; margin-bottom: 12px; }
-        .bot-info img { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; background: #114b44; border: 1px solid #0d3c38; }
-        .bot-name h3 { margin: 0; font-size: 16px; font-weight: bold; letter-spacing: 0.5px; }
-        .bot-username { color: #a0a0a0; font-size: 12px; margin: 2px 0 0 0; }
-        .bot-desc { font-size: 13px; color: #e0e0e0; line-height: 1.4; margin: 8px 0 16px 0; }
-        
-        .status-badge { position: absolute; top: 16px; right: 16px; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 12px; background-color: rgba(41, 255, 214, 0.1); color: #29ffd6; border: 1px solid rgba(41, 255, 214, 0.3); }
-        
-        .btn { display: block; width: 100%; padding: 11px 0; border-radius: 10px; font-size: 14px; font-weight: bold; text-align: center; cursor: pointer; border: none; transition: 0.2s; }
-        .btn-open { background-color: #0a3a35; color: white; border: 1px solid #145c54; }
-        .btn-open:active { transform: scale(0.98); }
+        :root {
+            --bg-color: #17212b;
+            --text-color: #f5f5f5;
+            --card-bg: #24303f;
+            --accent-color: #2481cc;
+            --hint-color: #708499;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+        }
+        .section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--hint-color);
+            padding-bottom: 8px;
+        }
+        /* Feature 1: User Profile */
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--hint-color);
+            object-fit: cover;
+        }
+        .user-info p {
+            margin: 4px 0;
+        }
+        /* Feature 2: Search & Bot List */
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--hint-color);
+            background: var(--bg-color);
+            color: var(--text-color);
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+        .bot-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .bot-item:last-child {
+            border-bottom: none;
+        }
+        .bot-details {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        /* Feature 3: Owner */
+        .owner-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- यूज़र डिटेल्स सेक्शन -->
-    <div class="header">
-        <img id="user-photo" src="https://dicebear.com" alt="User DP">
-        <div class="header-text">
-            <h2 id="user-name">Loading User...</h2>
-            <p id="user-info">Username: @... | ID: Fetching...</p>
+    <!-- FEATURE 1: TG USER DETAILS -->
+    <div class="section">
+        <h2>🎵 Welcome User</h2>
+        <div class="user-card">
+            <img id="user-photo" class="avatar" src="https://placeholder.com" alt="Profile">
+            <div class="user-info">
+                <p><strong>Name:</strong> <span id="user-name">Loading...</span></p>
+                <p><strong>Username:</strong> <span id="user-username">@loading</span></p>
+            </div>
         </div>
     </div>
 
-    <div class="title-section">
-        <h1>🤖 Music Bot Collective</h1>
-        <div class="active-tag" id="total-bots">0 Bots Active</div>
+    <!-- FEATURE 2: BOT LIST WITH SEARCH -->
+    <div class="section">
+        <h2>🤖 Music Bots List</h2>
+        <input type="text" id="search-input" class="search-bar" placeholder="Search bots here...">
+        <div id="bots-container">
+            <!-- Bots dynamically add honge -->
+        </div>
     </div>
 
-    <!-- बोट्स लिस्ट कंटेनर -->
-    <div id="bot-list-container">
-        <p style="text-align: center; color: #a0a0a0; margin-top: 20px;">बोट्स की लिस्ट लोड हो रही है...</p>
+    <!-- FEATURE 3: OWNER DETAILS -->
+    <div class="section">
+        <h2>👑 Developer & Support</h2>
+        <div class="owner-card">
+            <p><strong>Owner:</strong> Niraj</p>
+            <p><strong>Username:</strong> @Comeback_009</p>
+            <a href="https://t.me/Sangeet_Stream" class="btn" style="text-align: center;">Support</a>
+        </div>
     </div>
 
     <script>
-        // टेलीग्राम इनिशियलाइज़ करना
+        // Telegram Web App initialize karna
         const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready(); // टेलीग्राम को सिग्नल भेजना कि ऐप लोड हो चुका है
+        tg.ready();
+        tg.expand(); // Full screen app open karne ke liye
 
-        // 🟢 1. यूज़र की लाइव डिटेल्स टेलीग्राम से खींचना
-        const userData = tg.initDataUnsafe?.user;
-
-        if (userData) {
-            // यूज़र का नाम सेट करें
-            const fullName = `${userData.first_name} ${userData.last_name || ''}`.trim();
-            document.getElementById('user-name').innerText = fullName;
-            
-            // यूज़रनेम और आईडी सेट करें
-            const usernameText = userData.username ? `@${userData.username}` : "No Username";
-            document.getElementById('user-info').innerText = `${usernameText} | ID: ${userData.id}`;
-            
-            // अगर यूज़र की कोई लाइव टेलीग्राम फोटो उपलब्ध है, तो उसे दिखाएं
-            if (userData.photo_url) {
-                document.getElementById('user-photo').src = userData.photo_url;
-            } else {
-                // अगर फोटो छुपी हुई है, तो नाम के पहले अक्षर की सुंदर फोटो जनरेट करें
-                document.getElementById('user-photo').src = `https://dicebear.com{fullName}`;
+        // 1. Automatic User Details Fetch
+        const user = tg.initDataUnsafe?.user;
+        if (user) {
+            document.getElementById('user-name').innerText = `${user.first_name} ${user.last_name || ''}`;
+            document.getElementById('user-username').innerText = user.username ? `@${user.username}` : 'No Username';
+            if (user.photo_url) {
+                document.getElementById('user-photo').src = user.photo_url;
             }
         } else {
-            // 🟡 बैकअप: केवल टेलीग्राम के बाहर (जैसे क्रोम ब्राउज़र में) टेस्टिंग के लिए
-            document.getElementById('user-name').innerText = "Demo Developer 🚀";
-            document.getElementById('user-info').innerText = "@demo_user | ID: 123456789";
-            document.getElementById('user-photo').src = "https://dicebear.com";
+            // Browser testing ke liye dummy data
+            document.getElementById('user-name').innerText = "Guest User";
+            document.getElementById('user-username').innerText = "@guest";
         }
 
-        // 2. अलग फ़ाइल (bots.json) से बोट्स का डेटा लोड करना
-        async function fetchBotsFromJSON() {
-            const container = document.getElementById('bot-list-container');
-            try {
-                const response = await fetch('./bots.json');
-                const botsData = await response.json();
+        // 2. Bots Data List (Aap isme apne bots add kar sakte hain)
+        const botsData = [
+            { name: "˹ʟᴀᴀᴅᴏ ꭙ ᴍᴜsɪᴄ˼ ♪", username: "laado_musicbot", img: "https://image-link.edgeone.app/1780443606689-jovnxm.jpg" },
+            { name: "𝗣𝗅𝗮𝘺𝘦𝘳𝘱𝙧𝘰 ꭙ 𝗠𝑢𝑠𝑖𝑐 ♪", username: "PlayerPro_MusicBot", img: "https://placeholder.com" },
+            { name: "˹ᴋᴜᴋᴜ ꭙ ᴍᴜꜱɪᴄ˼ ♪", username: "Kuku_MusicBot", img: "https://placeholder.com" },
+        ];
 
-                document.getElementById('total-bots').innerText = `${botsData.length} Bots Active`;
-                container.innerHTML = ""; 
+        const container = document.getElementById('bots-container');
+        const searchInput = document.getElementById('search-input');
 
-                botsData.forEach(bot => {
-                    const card = document.createElement('div');
-                    card.className = "bot-card";
-                    
-                    const botPhoto = `https://dicebear.com{bot.username}`;
+        // Function: Bot list ko screen par render karna
+        function renderBots(filterText = "") {
+            container.innerHTML = "";
+            const filtered = botsData.filter(bot => 
+                bot.name.toLowerCase().includes(filterText.toLowerCase()) || 
+                bot.username.toLowerCase().includes(filterText.toLowerCase())
+            );
 
-                    card.innerHTML = `
-                        <div class="status-badge">● Online</div>
-                        <div class="bot-info">
-                            <img src="${botPhoto}" alt="${bot.name}">
-                            <div class="bot-name">
-                                <h3>${bot.name}</h3>
-                                <p class="bot-username">@${bot.username}</p>
-                            </div>
-                        </div>
-                        <p class="bot-desc">${bot.desc}</p>
-                        <button class="btn btn-open" onclick="window.Telegram.WebApp.openTelegramLink('https://t.me{bot.username}')">
-                            💬 Open Private Chat
-                        </button>
-                    `;
-                    container.appendChild(card);
-                });
-
-            } catch (error) {
-                console.error("JSON फ़ाइल लोड करने में एरर आया:", error);
-                container.innerHTML = `<p style="text-align: center; color: #ff5555;">बोट्स की लिस्ट लोड नहीं हो सकी।</p>`;
+            if (filtered.length === 0) {
+                container.innerHTML = "<p style='color:var(--hint-color);'>No bots found.</p>";
+                return;
             }
+
+            filtered.forEach(bot => {
+                const item = document.createElement('div');
+                item.className = 'bot-item';
+                item.innerHTML = `
+                    <div class="bot-details">
+                        <img src="${bot.img}" class="avatar" style="width:40px; height:40px;">
+                        <div>
+                            <div style="font-weight:bold;">${bot.name}</div>
+                            <div style="color:var(--hint-color); font-size:0.85rem;">@${bot.username}</div>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="openBot('${bot.username}')">Open</button>
+                `;
+                container.appendChild(item);
+            });
         }
 
-        fetchBotsFromJSON();
+        // Function: Telegram link open karna
+        function openBot(username) {
+            tg.openTelegramLink(`https://t.me{username}`);
+        }
+
+        // Search Bar Event Listener
+        searchInput.addEventListener('input', (e) => {
+            renderBots(e.target.value);
+        });
+
+        // Initial load
+        renderBots();
     </script>
 </body>
 </html>
