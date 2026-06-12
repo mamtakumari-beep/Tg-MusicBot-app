@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TG Music Bots Hub</title>
+    <!-- Telegram Library -->
     <script src="https://telegram.org"></script>
     <style>
         :root {
@@ -40,27 +41,28 @@
             align-items: center;
             gap: 15px;
         }
-        .avatar {
+        .avatar-container {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: var(--hint-color);
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.4rem;
+            color: white;
+            overflow: hidden;
+        }
+        .avatar-img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
         .user-info p {
             margin: 4px 0;
         }
-        /* Feature 2: Search & Bot List */
-        .search-bar {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--hint-color);
-            background: var(--bg-color);
-            color: var(--text-color);
-            box-sizing: border-box;
-            margin-bottom: 15px;
-        }
+        /* Feature 2: Bot List */
         .bot-item {
             display: flex;
             align-items: center;
@@ -75,6 +77,12 @@
             display: flex;
             align-items: center;
             gap: 12px;
+        }
+        .bot-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
         }
         .btn {
             background: var(--accent-color);
@@ -100,21 +108,18 @@
     <div class="section">
         <h2>🎵 Welcome User</h2>
         <div class="user-card">
-            <img id="user-photo" class="avatar" src="https://placeholder.com" alt="Profile">
+            <div id="avatar-box" class="avatar-container">?</div>
             <div class="user-info">
-                <p><strong>Name:</strong> <span id="user-name">Loading...</span></p>
-                <p><strong>Username:</strong> <span id="user-username">@loading</span></p>
+                <p><strong>Name:</strong> <span id="user-name">Fetching...</span></p>
+                <p><strong>Username:</strong> <span id="user-username">@fetching</span></p>
             </div>
         </div>
     </div>
 
-    <!-- FEATURE 2: BOT LIST WITH SEARCH -->
+    <!-- FEATURE 2: BOT LIST -->
     <div class="section">
         <h2>🤖 Music Bots List</h2>
-        <input type="text" id="search-input" class="search-bar" placeholder="Search bots here...">
-        <div id="bots-container">
-            <!-- Bots dynamically add honge -->
-        </div>
+        <div id="bots-container"></div>
     </div>
 
     <!-- FEATURE 3: OWNER DETAILS -->
@@ -123,82 +128,88 @@
         <div class="owner-card">
             <p><strong>Owner:</strong> Niraj</p>
             <p><strong>Username:</strong> @Comeback_009</p>
-            <a href="https://t.me/Sangeet_Stream" class="btn" style="text-align: center;">Support</a>
+            <a href="https://t.me/Sangeet_Stream" class="btn" style="text-align: center;">Contact Support</a>
         </div>
     </div>
 
     <script>
-        // Telegram Web App initialize karna
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand(); // Full screen app open karne ke liye
+        // Telegram Initialization Secure Function
+        window.addEventListener('DOMContentLoaded', () => {
+            const tg = window.Telegram?.WebApp;
+            
+            if (tg) {
+                tg.ready();
+                tg.expand();
 
-        // 1. Automatic User Details Fetch
-        const user = tg.initDataUnsafe?.user;
-        if (user) {
-            document.getElementById('user-name').innerText = `${user.first_name} ${user.last_name || ''}`;
-            document.getElementById('user-username').innerText = user.username ? `@${user.username}` : 'No Username';
-            if (user.photo_url) {
-                document.getElementById('user-photo').src = user.photo_url;
+                // User details nikalna
+                const initData = tg.initDataUnsafe;
+                const user = initData?.user;
+
+                if (user) {
+                    const firstName = user.first_name || "";
+                    const lastName = user.last_name || "";
+                    const fullName = `${firstName} ${lastName}`.trim();
+                    const username = user.username ? `@${user.username}` : 'No Username';
+
+                    // Update UI
+                    document.getElementById('user-name').innerText = fullName;
+                    document.getElementById('user-username').innerText = username;
+
+                    // Profile Pic Setup
+                    const avatarBox = document.getElementById('avatar-box');
+                    if (user.photo_url) {
+                        avatarBox.innerHTML = `<img src="${user.photo_url}" class="avatar-img" alt="DP">`;
+                    } else {
+                        // Agar DP URL na mile, to naam ka pehla letter dikhao (Fallback)
+                        avatarBox.innerText = firstName.charAt(0).toUpperCase();
+                    }
+                } else {
+                    showDemoData("User data null (Try from Bot Link)");
+                }
+            } else {
+                showDemoData("Not in Telegram Environment");
             }
-        } else {
-            // Browser testing ke liye dummy data
-            document.getElementById('user-name').innerText = "Guest User";
-            document.getElementById('user-username').innerText = "@guest";
-        }
-
-        // 2. Bots Data List (Aap isme apne bots add kar sakte hain)
-        const botsData = [
-            { name: "˹ʟᴀᴀᴅᴏ ꭙ ᴍᴜsɪᴄ˼ ♪", username: "laado_musicbot", img: "https://image-link.edgeone.app/1780443606689-jovnxm.jpg" },
-            { name: "𝗣𝗅𝗮𝘺𝘦𝘳𝘱𝙧𝘰 ꭙ 𝗠𝑢𝑠𝑖𝑐 ♪", username: "PlayerPro_MusicBot", img: "https://placeholder.com" },
-            { name: "˹ᴋᴜᴋᴜ ꭙ ᴍᴜꜱɪᴄ˼ ♪", username: "Kuku_MusicBot", img: "https://placeholder.com" },
-        ];
-
-        const container = document.getElementById('bots-container');
-        const searchInput = document.getElementById('search-input');
-
-        // Function: Bot list ko screen par render karna
-        function renderBots(filterText = "") {
-            container.innerHTML = "";
-            const filtered = botsData.filter(bot => 
-                bot.name.toLowerCase().includes(filterText.toLowerCase()) || 
-                bot.username.toLowerCase().includes(filterText.toLowerCase())
-            );
-
-            if (filtered.length === 0) {
-                container.innerHTML = "<p style='color:var(--hint-color);'>No bots found.</p>";
-                return;
-            }
-
-            filtered.forEach(bot => {
-                const item = document.createElement('div');
-                item.className = 'bot-item';
-                item.innerHTML = `
-                    <div class="bot-details">
-                        <img src="${bot.img}" class="avatar" style="width:40px; height:40px;">
-                        <div>
-                            <div style="font-weight:bold;">${bot.name}</div>
-                            <div style="color:var(--hint-color); font-size:0.85rem;">@${bot.username}</div>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="openBot('${bot.username}')">Open</button>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        // Function: Telegram link open karna
-        function openBot(username) {
-            tg.openTelegramLink(`https://t.me{username}`);
-        }
-
-        // Search Bar Event Listener
-        searchInput.addEventListener('input', (e) => {
-            renderBots(e.target.value);
         });
 
-        // Initial load
-        renderBots();
+        function showDemoData(reason) {
+            document.getElementById('user-name').innerText = "Demo Account";
+            document.getElementById('user-username').innerText = "@demo_user";
+            document.getElementById('avatar-box').innerText = "D";
+            console.log("Status: " + reason);
+        }
+
+        // 2. Bots Data List
+        const botsData = [
+            { name: "laado Music Bot", username: "laado_musicbot", img: "https://unsplash.com" },
+            { name: "Spotify", username: "spotifysave_bot", img: "https://unsplash.com" },
+            { name: "YouTube music", username: "yt_audio_bot", img: "https://unsplash.com" },
+        ];
+
+        // Render Bots
+        const container = document.getElementById('bots-container');
+        botsData.forEach(bot => {
+            const item = document.createElement('div');
+            item.className = 'bot-item';
+            item.innerHTML = `
+                <div class="bot-details">
+                    <img src="${bot.img}" class="bot-avatar">
+                    <div>
+                        <div style="font-weight:bold;">${bot.name}</div>
+                        <div style="color:var(--hint-color); font-size:0.85rem;">@${bot.username}</div>
+                    </div>
+                </div>
+                <button class="btn" onclick="openBot('${bot.username}')">Open</button>
+            `;
+            container.appendChild(item);
+        });
+
+        function openBot(username) {
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.openTelegramLink(`https://t.me{username}`);
+            } else {
+                window.open(`https://t.me{username}`, '_blank');
+            }
+        }
     </script>
 </body>
 </html>
