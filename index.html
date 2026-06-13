@@ -114,34 +114,26 @@
             margin-top: 4px;
             align-self: flex-end; /* Time ko bubble ke right side me khiskayega */
         }
-    
+    <!-- CSS Style -->
+<style>
+.button-container {
+  text-align: center;  /* यह इसके अंदर के बटन को बीच में कर देगा */
+  width: 100%;        /* पूरी चौड़ाई लेने के लिए */
+  margin: 10px 0;     /* ऊपर और नीचे थोड़ी खाली जगह के लिए */
+}
+
 .my-button {
-    display: inline-block;
-    padding: 12px 28px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #0088cc; /* Telegram का ऑफिशियल ब्लू रंग */
-    text-decoration: none;
-    border-radius: 50px; /* बटन को गोल करने के लिए */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease; /* स्मूथ इफेक्ट के लिए */
-    font-family: Arial, sans-serif;
+  display: inline-block;
+  background-color: #4CAF50;
+  color: white;
+  padding: 5px 10px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+  /* float: right; को यहाँ से हटा दिया गया है */
 }
+</style>
 
-/* माउस ले जाने पर (Hover Effect) */
-.my-button:hover {
-    background-color: #006699; /* गहरा नीला रंग */
-    transform: translateY(-2px); /* बटन थोड़ा ऊपर उठेगा */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* बटन पर क्लिक करते समय */
-.my-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-    </style>
 </head>
 <body>
 
@@ -165,22 +157,11 @@
                 
                 <!-- Time Stamp -->
                 <div class="message-time">ID: 7771481658</div>
-            <!-- HTML बटन (आपकी लाइन) -->
-<a href="https://t.me/Comeback_009" class="my-button" target="_blank">Help</a>
+            <!-- HTML कोड -->
+<div class="button-container">
+  <a href="https://t.me" class="my-button">help</a>
+</div>
             </div>
 </body>
-            <!-- JavaScript Script -->
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const helpButton = document.querySelector('.my-button');
-
-    helpButton.addEventListener('click', function(event) {
-        // कंसोल में लॉग करने के लिए (टेस्टिंग के लिए)
-        console.log("Telegram सपोर्ट बटन पर क्लिक किया गया!");
-        
-        // आप चाहें तो यूजर को एक अलर्ट भी दिखा सकते हैं (वैकल्पिक)
-        // alert("आपको Telegram पर रीडायरेक्ट किया जा रहा है...");
-    });
-});
-</script>
+            
 </html>
