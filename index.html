@@ -114,6 +114,33 @@
             margin-top: 4px;
             align-self: flex-end; /* Time ko bubble ke right side me khiskayega */
         }
+    
+.my-button {
+    display: inline-block;
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #0088cc; /* Telegram का ऑफिशियल ब्लू रंग */
+    text-decoration: none;
+    border-radius: 50px; /* बटन को गोल करने के लिए */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease; /* स्मूथ इफेक्ट के लिए */
+    font-family: Arial, sans-serif;
+}
+
+/* माउस ले जाने पर (Hover Effect) */
+.my-button:hover {
+    background-color: #006699; /* गहरा नीला रंग */
+    transform: translateY(-2px); /* बटन थोड़ा ऊपर उठेगा */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* बटन पर क्लिक करते समय */
+.my-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
     </style>
 </head>
 <body>
@@ -138,6 +165,22 @@
                 
                 <!-- Time Stamp -->
                 <div class="message-time">ID: 7771481658</div>
+            <!-- HTML बटन (आपकी लाइन) -->
+<a href="https://t.me/Comeback_009" class="my-button" target="_blank">Help</a>
             </div>
 </body>
+            <!-- JavaScript Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const helpButton = document.querySelector('.my-button');
+
+    helpButton.addEventListener('click', function(event) {
+        // कंसोल में लॉग करने के लिए (टेस्टिंग के लिए)
+        console.log("Telegram सपोर्ट बटन पर क्लिक किया गया!");
+        
+        // आप चाहें तो यूजर को एक अलर्ट भी दिखा सकते हैं (वैकल्पिक)
+        // alert("आपको Telegram पर रीडायरेक्ट किया जा रहा है...");
+    });
+});
+</script>
 </html>
