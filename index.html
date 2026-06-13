@@ -3,217 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TG Music Bots Hub</title>
-    <!-- ✅ FIXED: Sahi Telegram Library Link lagaya hai -->
-    <script src="https://telegram.org"></script>
+    <title>TG Mini App</title>
+    <!-- Telegram Web App Script (Head me load hona jaroori hai) -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --bg-color: #17212b;
-            --text-color: #f5f5f5;
-            --card-bg: #24303f;
-            --accent-color: #2481cc;
-            --hint-color: #708499;
-        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            padding: 20px;
             margin: 0;
+        }
+        .card {
+            background: var(--tg-theme-secondary-bg-color, #f0f0f0);
             padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .section {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h2 {
-            margin-top: 0;
-            font-size: 1.2rem;
-            color: var(--accent-color);
-            border-bottom: 1px solid var(--hint-color);
-            padding-bottom: 8px;
-        }
-        /* Feature 1: User Profile */
-        .user-card {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        h3 { margin-top: 0; color: #2481cc; }
+        p { margin: 5px 0; font-size: 14px; }
+        .bold { font-weight: bold; }
+        
+        /* 🌟 प्रोफाइल फोटो के लिए नया डिज़ाइन */
         .avatar-container {
-            width: 60px;
-            height: 60px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .user-avatar {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            background: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.4rem;
-            color: white;
-            overflow: hidden;
-        }
-        .avatar-img {
-            width: 100%;
-            height: 100%;
+            border: 3px solid #2481cc;
             object-fit: cover;
-        }
-        .user-info p {
-            margin: 4px 0;
-        }
-        /* Feature 2: Bot List */
-        .bot-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .bot-item:last-child {
-            border-bottom: none;
-        }
-        .bot-details {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .bot-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-        /* Feature 3: Owner */
-        .owner-card {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
 
-    <!-- FEATURE 1: TG USER DETAILS -->
-    <div class="section">
-        <h2>🎵 Welcome User</h2>
-        <div class="user-card">
-            <div id="avatar-box" class="avatar-container">?</div>
-            <div class="user-info">
-                <p><strong>Name:</strong> <span id="user-name">Fetching...</span></p>
-                <p><strong>Username:</strong> <span id="user-username">@fetching</span></p>
-            </div>
+    <h2>Welcome dear 👀</h2>
+    <h4>🎧 Looking For A Music Bot? ✨Fast • Smooth • 24/7 Active, Play 🔍 Your Favorite Songs Instantly, Enjoy Music Without Hassle 🎶 Try It Once, You'll Love It 💞</h4>
+
+    <!-- Feature 1: User Details -->
+    <div class="card" id="user-card">
+        <h3>👤 User Details (You)</h3>
+        
+        <!-- 🌟 नया प्रोफाइल फोटो का सेक्शन -->
+        <div class="avatar-container">
+            <!-- शुरू में एक डिफ़ॉल्ट यूजर इमेज लोड होगी -->
+            <img id="u-avatar" class="user-avatar" src="https://cloudflare.com" alt="User DP">
         </div>
+
+        <p><span class="bold">Name:</span> <span id="u-name">Loading...</span></p>
+        <p><span class="bold">Username:</span> <span id="u-username">Loading...</span></p>
+        <p><span class="bold">ID:</span> <span id="u-id">Loading...</span></p>
+        <p><span class="bold">Language:</span> <span id="u-lang">Loading...</span></p>
     </div>
 
-    <!-- FEATURE 2: BOT LIST -->
-    <div class="section">
-        <h2>🤖 Music Bots List</h2>
-        <div id="bots-container"></div>
-    </div>
+    <body>
+        <h2>🤖 Music Bot Collective</h2>
 
-    <!-- FEATURE 3: OWNER DETAILS -->
-    <div class="section">
-        <h2>👑 Developer & Support</h2>
-        <div class="owner-card">
-            <!-- ✍️ Yahan apna asli naam badlein -->
-            <p><strong>Owner:</strong> Niraj</p>
-            <!-- ✍️ Yahan apna asli telegram username badlein -->
-            <p><strong>Username:</strong> @Comeback_009</p>
-            <!-- ✍️ Yahan apne bot ya chat ka link dalein -->
-            <a href="https://t.me/Comeback_009" class="btn" style="text-align: center;">Support</a>
+        <div class="card" id="active-card">
+        <h3>Total Bots 10</h3>
+        <p><span class="bold">Active Bots:</span> 03</p>
         </div>
+    <body>
+        
+    <!-- Feature 2: Bot Details -->
+    <div class="card" id="bot-card">
+        <h3>🤖 Bot 1 Details</h3>
+        <p><span class="bold">Bot Name:</span> ˹ʟᴀᴀᴅᴏ ꭙ ᴍᴜsɪᴄ˼ ♪</p>
+        <p><span class="bold">Bot Username:</span> @laado_musicbot</p>
+        <p><span class="bold">Status:</span> ● online</p>
+    </div>
+        <a href="https://google.com" class="my-button">गूगल पर जाएं</a>
+    
+    <div class="card" id="bot-card">
+        <h3>🤖 Bot 2 Details</h3>
+        <p><span class="bold">Bot Name:</span> 𝗣𝗅𝗮𝘺𝘦𝘳𝘱𝙧𝘰 ꭙ 𝗠𝑢𝑠𝑖𝑐 ♪</p>
+        <p><span class="bold">Bot Username:</span> @PlayerPro_MusicBot</p>
+        <p><span class="bold">Status:</span> ● online</p>
+   </div>
+
+    <div class="card" id="bot-card">
+        <h3>🤖 Bot 3 Details</h3>
+        <p><span class="bold">Bot Name:</span> ˹ᴋᴜᴋᴜ ꭙ ᴍᴜꜱɪᴄ˼ ♪</p>
+        <p><span class="bold">Bot Username:</span> @Kuku_MusicBot</p>
+        <p><span class="bold">Status:</span> ● online</p>
+        </div>
+
+    <!-- Feature 3: App Owner Details -->
+    <div class="card" id="owner-card">
+        <h3>Developer & Support</h3>
+        <p><span class="bold">Owner Name:</span> Niraj</p>
+        <p><span class="bold">Telegram Username:</span> @Comeback_009</p>
+        <p><span class="bold">Support:</span> https://t.me/Sangeet_Stream</p>
     </div>
 
     <script>
-        // Telegram Initialization Secure Function
-        window.addEventListener('DOMContentLoaded', () => {
+        function initTelegramApp() {
+            // Telegram WebApp Object Check
             const tg = window.Telegram?.WebApp;
-            
+
             if (tg) {
-                tg.ready();
-                tg.expand();
+                tg.ready(); 
+                tg.expand(); 
 
-                // User details nikalna
-                const initData = tg.initDataUnsafe;
-                const user = initData?.user;
+                // Data fetch karne ki koshish karein
+                const user = tg.initDataUnsafe?.user; 
 
-                if (user) {
-                    const firstName = user.first_name || "";
-                    const lastName = user.last_name || "";
-                    const fullName = `${firstName} ${lastName}`.trim();
-                    const username = user.username ? `@${user.username}` : 'No Username';
-
-                    // Update UI
-                    document.getElementById('user-name').innerText = fullName;
-                    document.getElementById('user-username').innerText = username;
-
-                    // Profile Pic Setup
-                    const avatarBox = document.getElementById('avatar-box');
+                if (user && user.id) {
+                    // Agar user mil gaya toh loading hatao aur details dikhao
+                    document.getElementById('u-name').innerText = `${user.first_name} ${user.last_name || ''}`;
+                    document.getElementById('u-username').innerText = user.username ? `@${user.username}` : 'No Username';
+                    document.getElementById('u-id').innerText = user.id;
+                    document.getElementById('u-lang').innerText = user.language_code || 'en';
+                    
+                    // 🌟 अगर टेलीग्राम यूजर की फोटो का यूआरएल देता है तो उसे अपडेट करें
                     if (user.photo_url) {
-                        avatarBox.innerHTML = `<img src="${user.photo_url}" class="avatar-img" alt="DP">`;
-                    } else {
-                        // Fallback: Agar photo na mile, to naam ka pehla aksar bada karke dikhao
-                        avatarBox.innerText = firstName.charAt(0).toUpperCase();
+                        document.getElementById('u-avatar').src = user.photo_url;
                     }
-                } else {
-                    showDemoData("User data null (Open via Bot Link Only)");
+                    
+                    // Interval ko rokne ke liye
+                    clearInterval(checkInterval);
                 }
-            } else {
-                showDemoData("Not in Telegram Environment");
-            }
-        });
-
-        function showDemoData(reason) {
-            document.getElementById('user-name').innerText = "Demo Account";
-            document.getElementById('user-username').innerText = "@demo_user";
-            document.getElementById('avatar-box').innerText = "D";
-            console.log("Status: " + reason);
-        }
-
-        // 2. Bots Data List (Aap yahan placeholder image links badal sakte hain)
-        const botsData = [
-            { name: "˹ʟᴀᴀᴅᴏ ꭙ ᴍᴜsɪᴄ˼ ♪", username: "laado_musicbot", img: "https://image-link.edgeone.app/1780443422645-he6p9r.jpg" },
-            { name: "Spotify", username: "spotifysave_bot", img: "https://unsplash.com" },
-            { name: "YouTube music", username: "yt_audio_bot", img: "https://unsplash.com" },
-        ];
-
-        // Render Bots
-        const container = document.getElementById('bots-container');
-        botsData.forEach(bot => {
-            const item = document.createElement('div');
-            item.className = 'bot-item';
-            item.innerHTML = `
-                <div class="bot-details">
-                    <img src="${bot.img}" class="bot-avatar">
-                    <div>
-                        <div style="font-weight:bold;">${bot.name}</div>
-                        <div style="color:var(--hint-color); font-size:0.85rem;">@${bot.username}</div>
-                    </div>
-                </div>
-                <button class="btn" onclick="openBot('${bot.username}')">Open</button>
-            `;
-            container.appendChild(item);
-        });
-
-        // ✅ FIXED: Missing slash (/) syntax fix kar diya gaya hai
-        function openBot(username) {
-            if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.openTelegramLink(`https://t.me{username}`);
-            } else {
-                window.open(`https://t.me{username}`, '_blank');
             }
         }
+
+        // Agar data slow load ho raha hai, toh yeh har 500ms (0.5 second) me check karega
+        const checkInterval = setInterval(initTelegramApp, 500);
+
+        // Max 5 seconds tak check karega, agar fir bhi nahi mila toh Browser mode default data dikhayega
+        setTimeout(() => {
+            clearInterval(checkInterval);
+            if (document.getElementById('u-id').innerText === "Loading...") {
+                document.getElementById('u-name').innerText = "Web Browser Mode";
+                document.getElementById('u-username').innerText = "@not_inside_tg";
+                document.getElementById('u-id').innerText = "Offline_ID_101";
+                document.getElementById('u-lang').innerText = "en";
+                // ब्राउज़र मोड में एक फूल वाली डिफ़ॉल्ट इमेज दिखेगी
+                document.getElementById('u-avatar').src = "https://cloudflare.com";
+            }
+        }, 5000);
+    </script>
+<!-- छह रंग-बिरंगे बटनों का नया HTML कोड -->
+<div class="custom-bottom-container">
+    <button class="custom-bottom-btn bot1-btn" onclick="openBot1(event)" ontouchstart="openBot1(event)">Bot 1</button>
+    <button class="custom-bottom-btn bot2-btn" onclick="openBot2(event)" ontouchstart="openBot2(event)">Bot 2</button>
+    <button class="custom-bottom-btn bot3-btn" onclick="openBot3(event)" ontouchstart="openBot3(event)">Bot 3</button>
+    
+    <!-- नए 3 बॉट्स के बटन्स -->
+    <button class="custom-bottom-btn channel-btn" onclick="openMyChannel(event)" ontouchstart="openMyChannel(event)">channel</button>
+    <button class="custom-bottom-btn group-btn" onclick="openMyGroup(event)" ontouchstart="openMyGroup(event)">group</button>
+    <button class="custom-bottom-btn third-btn" onclick="openThirdLink(event)" ontouchstart="openThirdLink(event)">help</button>
+</div>
+
+<style>
+    /* बटन कंटेनर को नीचे फिक्स करने के लिए */
+    .custom-bottom-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 8px 6px; 
+        box-sizing: border-box;
+        background-color: #17212b; /* डार्क बैकग्राउंड */
+        z-index: 9999;
+        display: flex;
+        flex-wrap: wrap; /* 1 लाइन में 3 होकर नीचे आएंगे */
+        gap: 6px; 
+    }
+
+    /* बटनों का बेसिक डिज़ाइन */
+    .custom-bottom-btn {
+        flex: 1 1 calc(33.33% - 4px); /* 1 लाइन में 3 बटन्स */
+        padding: 10px 4px; 
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-size: 11px; 
+        font-weight: bold;
+        cursor: pointer;
+        white-space: nowrap; 
+        text-align: center;
+        transition: background 0.2s ease;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent; /* मोबाइल टच रिस्पॉन्स को फ़ास्ट करने के लिए */
+    }
+
+    /* 1. बॉट 1 बटन: संतरा रंग (Orange) */
+    .bot1-btn { background-color: #e67e22; }
+    .bot1-btn:active { background-color: #d35400; }
+
+    /* 2. बॉट 2 बटन: गुलाबी/लाल रंग (Pinkish Red) */
+    .bot2-btn { background-color: #e84393; }
+    .bot2-btn:active { background-color: #c2185b; }
+
+    /* 3. बॉट 3 बटन: फिरोजी/लाइट ग्रीन (Teal/Mint Green) */
+    .bot3-btn { background-color: #10b981; }
+    .bot3-btn:active { background-color: #059669; }
+
+    /* 4. चैनल बटन: नीला (Blue) */
+    .channel-btn { background-color: #2481cc; }
+    .channel-btn:active { background-color: #1a659e; }
+
+    /* 5. ग्रुप बटन: गहरा हरा (Dark Green) */
+    .group-btn { background-color: #2ea64f; }
+    .group-btn:active { background-color: #217838; }
+
+    /* 6. हेल्प बटन: बैंगनी (Purple) */
+    .third-btn { background-color: #6c5ce7; }
+    .third-btn:active { background-color: #5b4cc4; }
+    
+    /* पेज का कंटेंट बटनों के पीछे न छुपे */
+    body {
+        padding-bottom: 95px !important; 
+    }
+</style>
+
+<!-- टेलीग्राम का जावास्क्रिप्ट SDK -->
+<script src="https://telegram.org"></script>
+
+<script>
+    // टेलीग्राम वेब ऐप को तुरंत इनिशियलाइज करना
+    const tg = window.Telegram.WebApp;
+    
+    // यह टेलीग्राम को बताता है कि ऐप लोड हो चुका है, जिससे फर्स्ट क्लिक तुरंत काम करे
+    tg.ready();
+    tg.expand();
+
+    // डबल क्लिक या टच लैग को रोकने के लिए हेल्पर फ़ंक्शन
+    function handleNavigation(e, url) {
+        if (e) {
+            e.preventDefault(); // डिफ़ॉल्ट ब्राउज़र बिहेवियर को रोकना
+            e.stopPropagation();
+        }
+        
+        // टेलीग्राम SDK के ज़रिए लिंक खोलना
+        if (tg && typeof tg.openTelegramLink === 'function') {
+            tg.openTelegramLink(url);
+        } else {
+            window.open(url, '_blank'); // बैकअप अगर SDK लोड न हुआ हो
+        }
+    }
+
+
+    // 1. Bot 1 का लिंक
+    function openBot1(e) {
+        handleNavigation(e, "https://t.me/laado_musicbot");
+    }
+
+    // 2. Bot 2 का लिंक
+    function openBot2(e) {
+        handleNavigation(e, "https://t.me/PlayerPro_MusicBot");
+    }
+
+    // 3. Bot 3 का लिंक
+    function openBot3(e) {
+        handleNavigation(e, "https://t.me/Kuku_MusicBot");
+    }
+
+    // 4. चैनल का लिंक
+    function openMyChannel(e) {
+        handleNavigation(e, "https://t.me/Sangeet_Stream"); 
+    }
+
+    // 5. ग्रुप का लिंक
+    function openMyGroup(e) {
+        handleNavigation(e, "https://t.me/sapna_quiz"); 
+    }
+
+    // 6. तीसरे हेल्प बटन का लिंक
+    function openThirdLink(e) {
+        handleNavigation(e, "https://t.me/Comeback_009"); 
+    }
+</script>
+    .my-button {
+    background-color: #4CAF50; /* बटन का बैकग्राउंड कलर (हरा) */
+    color: white;              /* टेक्स्ट का कलर (सफ़ेद) */
+    padding: 10px 20px;        /* बटन के अंदर की स्पेस */
+    text-decoration: none;     /* नीचे आने वाली अंडरलाइन को हटाने के लिए */
+    display: inline-block;     /* बटन की तरह व्यवहार करने के लिए */
+    border-radius: 5px;        /* कोनों को गोल करने के लिए */
+}
+
     </script>
 </body>
-</html>
+    </html>
